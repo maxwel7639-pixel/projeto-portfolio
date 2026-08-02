@@ -8,8 +8,13 @@ Site estático, sem build. Basta servir a pasta.
 ```
 index.html              página inteira (HTML + CSS + JS inline)
 assets/logo-mx.png      logo da marca (header + favicon)
-assets/proj-*.webp      prints dos 13 sites
+assets/proj-*.webp      prints desktop dos 13 sites (usados acima de 720px)
+assets/mob-*.webp       prints mobile dos 13 sites (usados até 720px)
 ```
+
+A paleta e o fundo do hero são os mesmos do mxdigital.ia.br — roxo
+`#8B2FD4`/`#A855F7` e magenta `#d81b93`/`#ff3db0`. Se o site principal mudar de
+identidade, é aqui que precisa acompanhar.
 
 ## Rodar local
 
@@ -39,31 +44,41 @@ não precisa mexer em mais nada ao adicionar ou remover um projeto.
 
 ## Os prints dos sites
 
-Cada card é um frame de navegador com o domínio real na barra de endereço e o
-print do site dentro. O print aparece nos dois lugares — carrossel e stack de
-scroll — a partir do campo `src`:
+Cada card é um frame com uma barra no topo que mostra o domínio real, o nicho e
+a numeração. Dentro dela vai o print do site. São **dois prints por projeto**,
+servidos por `<picture>` conforme a largura da tela:
 
 ```js
-{id:'kauana', ..., src:'assets/proj-kauana.webp'}
+{id:'kauana', ...,
+ src:   'assets/proj-kauana.webp',   // desktop, acima de 720px
+ srcMob:'assets/mob-kauana.webp'}    // mobile, até 720px
 ```
 
+O navegador baixa só o que vai usar, então nenhum aparelho carrega os dois.
+
 Se um projeto **não** tiver `src`, o card cai automaticamente no modo mockup:
-mesmo frame de navegador, mas com as iniciais do cliente em degradê no lugar do
-print. Serve pra publicar um projeto novo antes de ter a captura pronta.
+mesmo frame, mas com as iniciais do cliente em degradê no lugar do print. Serve
+pra publicar um projeto novo antes de ter a captura pronta. O `srcMob` é
+opcional — sem ele o print desktop é usado em qualquer largura.
 
 ### Trocar ou adicionar um print
 
-Prints são capturas do hero, ~2:1 (1600×760 fica ótimo), salvas em `.webp` como
-`assets/proj-{id}.webp`. O nome não é mágico — o que vale é o `src` no
-`PROJECTS` — mas seguir o padrão facilita.
+- **Desktop** (`proj-{id}.webp`): captura do hero em ~2:1, 1600px de largura.
+  A proporção é preservada, sem corte.
+- **Mobile** (`mob-{id}.webp`): captura do site aberto no celular, ~700px de
+  largura. Corte a barra de status do sistema (relógio/bateria) antes de salvar.
+  No card ela preenche a largura toda e o excedente é cortado pelo rodapé.
 
-A proporção é preservada no desktop (a imagem não é esticada nem cortada). No
-celular os cards são bem mais altos que 2:1, então o print recebe um corte pelo
-topo — 4:3 no card grande, 16:10 no card do carrossel. Por isso o que importa
-mais é o **topo** do print: logo, headline e botão principal.
+Nos dois casos o que importa é o **topo** do print — logo, headline e botão
+principal —, porque é o que sempre aparece.
 
-Vale manter os arquivos leves: os 13 prints juntos dão ~356 KB em webp. Os
-mesmos em PNG davam 3,2 MB.
+Vale manter os arquivos leves: os 13 prints desktop dão ~356 KB e os 13 mobile
+~596 KB, em webp. Os originais em PNG/JPEG davam 3,2 MB e 1,5 MB.
+
+### Ordem dos cards
+
+É a ordem do array `PROJECTS`, e vale para os dois lugares (carrossel e stack de
+scroll) ao mesmo tempo. Para promover um cliente, basta mover a linha dele.
 
 ## Antes de publicar em domínio próprio
 
