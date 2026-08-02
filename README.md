@@ -80,8 +80,15 @@ Vale manter os arquivos leves: os 13 prints desktop dão ~356 KB e os 13 mobile
 É a ordem do array `PROJECTS`, e vale para os dois lugares (carrossel e stack de
 scroll) ao mesmo tempo. Para promover um cliente, basta mover a linha dele.
 
-## Antes de publicar em domínio próprio
+## Meta tags e preview de link
 
-As meta tags Open Graph no `<head>` apontam para `https://mxdigital.ia.br`.
-Se o portfólio for para outro endereço, atualizar `og:url`, `og:image`,
-`twitter:image` e o `<link rel="canonical">`.
+As URLs absolutas do `<head>` apontam para `https://projeto-portfolio-blue.vercel.app`,
+que é onde o portfólio está hoje. Se ele for para um domínio próprio (por
+exemplo `mxdigital.ia.br/projetos`), trocar em quatro lugares:
+`<link rel="canonical">`, `og:url`, `og:image` e `twitter:image`.
+
+O preview que aparece ao compartilhar no WhatsApp usa `assets/og-portfolio.jpg`
+— um card 1200×630 na identidade do site. Para regerar depois de mudar o
+texto do hero, é mais simples refazer o card no mesmo tamanho e substituir o
+arquivo; as dimensões estão declaradas em `og:image:width/height` e precisam
+continuar batendo.
