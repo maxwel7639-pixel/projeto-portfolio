@@ -77,7 +77,10 @@ header{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 0;background:
 .sitem{position:sticky;top:7vh;height:86vh;min-height:520px;margin-bottom:14vh;will-change:transform}
 .sitem.hide{display:none}
 .pcard{position:relative;display:block;height:100%;border-radius:32px;overflow:hidden;background:linear-gradient(160deg,#14131b,#0b0a0f);border:1px solid var(--line);box-shadow:0 50px 120px -50px rgba(0,0,0,.95)}
-.pcard::after{content:"";position:absolute;inset:0;border-radius:32px;box-shadow:inset 0 0 0 1px rgba(168,85,247,.14);pointer-events:none}
+/* o card recua escurecendo, não ficando transparente: com print de tela cheia,
+   transparência deixava a imagem de um card aparecer através da do outro.
+   Como o fundo da página é quase preto, escurecer dá o mesmo efeito de recuo. */
+.pcard::after{content:"";position:absolute;inset:0;border-radius:32px;box-shadow:inset 0 0 0 1px rgba(168,85,247,.14);background:rgba(8,8,8,var(--dim,0));pointer-events:none;z-index:5}
 /* a prévia é decorativa: nunca pode capturar clique, senão cobre o "Ver site" */
 .shot{position:absolute;inset:0;pointer-events:none}
 .veil-p{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,.25) 0%,rgba(8,8,8,.2) 35%,rgba(8,8,8,.82) 72%,rgba(8,8,8,.97) 100%);pointer-events:none}
@@ -121,6 +124,8 @@ header{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 0;background:
 .stage.dragging{cursor:grabbing}
 .scard{position:absolute;width:420px;height:460px;border-radius:28px;overflow:hidden;background:linear-gradient(160deg,#14131b,#0b0a0f);border:1px solid var(--line);box-shadow:0 40px 90px -40px rgba(0,0,0,.9);will-change:transform,opacity}
 .scard .simg{position:absolute;inset:0;pointer-events:none}
+/* mesmo motivo do .pcard: o card do fundo não pode aparecer através do da frente */
+.scard::after{content:"";position:absolute;inset:0;border-radius:inherit;background:rgba(8,8,8,var(--dim,0));pointer-events:none;z-index:6}
 .scard .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,.05) 0%,rgba(8,8,8,.3) 34%,rgba(8,8,8,.86) 60%,rgba(8,8,8,.97) 100%);pointer-events:none}
 /* só o card da frente mostra texto — senão as legendas dos vizinhos se sobrepõem.
    Os invisíveis também não podem receber clique. */
@@ -335,7 +340,7 @@ function stackFx(){
     if(next){const nt=next.getBoundingClientRect().top,vh=innerHeight;p=Math.max(0,Math.min(1,(vh-nt)/(s.offsetHeight*.92)))}
     const e=p*p*(3-2*p);
     card.style.transform=`translateY(${-e*26}px) scale(${1-e*.11}) rotate(${e*(i%2?-1.1:1.1)}deg)`;
-    card.style.opacity=String(1-e*.45);
+    card.style.setProperty('--dim',(e*.62).toFixed(3));
     s.style.zIndex=String(i+1);
   });
 }
@@ -374,7 +379,10 @@ function render(){
     c.style.display=vis?'':'none';
     if(!vis)return;
     c.style.transform=`translateX(${o*w}px) translateY(${a*a*10}px) rotate(${o*4.5}deg) scale(${Math.max(.6,1-a*.09)})`;
-    c.style.opacity=Math.max(0,1-a*.4);
+    /* opaco enquanto está perto (senão os vizinhos vazam por dentro do card da
+       frente); só quem já está saindo do baralho é que some de vez */
+    c.style.setProperty('--dim',Math.min(1,a*.42).toFixed(3));
+    c.style.opacity=a<=1.6?'1':String(Math.max(0,1-(a-1.6)*.5));
     c.style.zIndex=String(100-Math.round(a*10)-(o>0?1:0));
     c.classList.toggle('active',i===front);
   });
