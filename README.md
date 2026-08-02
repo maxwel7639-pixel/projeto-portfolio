@@ -6,8 +6,9 @@ terapias e psicologia no Rio Grande do Sul.
 Site estático, sem build. Basta servir a pasta.
 
 ```
-index.html          página inteira (HTML + CSS + JS inline)
-assets/logo-mx.png  logo da marca (header + favicon)
+index.html              página inteira (HTML + CSS + JS inline)
+assets/logo-mx.png      logo da marca (header + favicon)
+assets/proj-*.webp      prints dos 13 sites
 ```
 
 ## Rodar local
@@ -36,18 +37,33 @@ não precisa mexer em mais nada ao adicionar ou remover um projeto.
 
 `cat` precisa ser `estetica`, `terapias` ou `psicologia` (é o que os filtros usam).
 
-## Trocar o mockup pelo print real do site
+## Os prints dos sites
 
-Enquanto um projeto não tem print, o card mostra um mockup de navegador com o
-domínio real e as iniciais do cliente. Para usar o print de verdade, salve a
-imagem em `assets/` e adicione o campo `src` no projeto:
+Cada card é um frame de navegador com o domínio real na barra de endereço e o
+print do site dentro. O print aparece nos dois lugares — carrossel e stack de
+scroll — a partir do campo `src`:
 
 ```js
-{id:'kauana', ..., src:'assets/proj-kauana.png'}
+{id:'kauana', ..., src:'assets/proj-kauana.webp'}
 ```
 
-O card passa a exibir a imagem automaticamente, nos dois lugares (carrossel e
-stack de scroll). Prints ficam melhores em ~1600×900, alinhados pelo topo.
+Se um projeto **não** tiver `src`, o card cai automaticamente no modo mockup:
+mesmo frame de navegador, mas com as iniciais do cliente em degradê no lugar do
+print. Serve pra publicar um projeto novo antes de ter a captura pronta.
+
+### Trocar ou adicionar um print
+
+Prints são capturas do hero, ~2:1 (1600×760 fica ótimo), salvas em `.webp` como
+`assets/proj-{id}.webp`. O nome não é mágico — o que vale é o `src` no
+`PROJECTS` — mas seguir o padrão facilita.
+
+A proporção é preservada no desktop (a imagem não é esticada nem cortada). No
+celular os cards são bem mais altos que 2:1, então o print recebe um corte pelo
+topo — 4:3 no card grande, 16:10 no card do carrossel. Por isso o que importa
+mais é o **topo** do print: logo, headline e botão principal.
+
+Vale manter os arquivos leves: os 13 prints juntos dão ~356 KB em webp. Os
+mesmos em PNG davam 3,2 MB.
 
 ## Antes de publicar em domínio próprio
 

@@ -87,8 +87,9 @@ header{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 0;background:
 .plink svg{width:15px;height:15px;transition:transform .25s ease}
 .plink:hover{color:#fff;transform:translateY(-2px);box-shadow:0 18px 44px -12px rgba(109,92,245,.95)}
 .plink:hover svg{transform:translate(2px,-2px)}
-/* preview do site: print real ou mockup de navegador */
-.shot img,.simg img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+/* preview do site: frame de navegador com o print real dentro (ou as iniciais,
+   enquanto o print não existe). O print mantém a proporção em vez de ser
+   cortado com object-fit:cover — num card alto viraria uma fatia com zoom. */
 .ph{position:absolute;inset:0;display:flex;flex-direction:column;background:linear-gradient(160deg,#1a1826 0%,#100e18 55%,#0a090f 100%)}
 .ph::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 65% 48% at 50% 24%,rgba(109,92,245,.3) 0%,transparent 70%)}
 .ph::after{content:"";position:absolute;inset:0;opacity:.5;background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000,transparent 75%)}
@@ -96,10 +97,12 @@ header{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 0;background:
 .ph-bar i{flex:none;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.15)}
 .ph-url{margin-left:10px;min-width:0;font-size:11.5px;font-weight:500;letter-spacing:.02em;color:var(--gray-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ph-body{position:relative;z-index:2;flex:1;display:flex;align-items:center;justify-content:center;padding:24px 24px 26%}
+.ph-body.has-shot{padding:0;overflow:hidden;align-items:flex-start;justify-content:flex-start}
+.ph-shot{width:100%;height:auto;display:block}
 .ph-mono{font-family:var(--font-display);font-weight:800;font-size:clamp(54px,11vh,116px);line-height:1;letter-spacing:-.045em;background:var(--purple-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-/* nos cards com mockup, o selo e a numeração descem abaixo da barra do navegador */
-.pcard.mock .badge,.pcard.mock .pnum{top:calc(40px + clamp(16px,2.2vw,24px))}
-.scard.mock .sbadge{top:54px}
+/* o selo e a numeração descem pra não colidir com a barra do navegador */
+.pcard .badge,.pcard .pnum{top:calc(40px + clamp(16px,2.2vw,24px))}
+.scard .sbadge{top:54px}
 /* stacked carousel */
 .stack-sec{padding:0 0 20px}
 .stack-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:26px}
@@ -113,7 +116,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 0;background:
 .stage.dragging{cursor:grabbing}
 .scard{position:absolute;width:420px;height:460px;border-radius:28px;overflow:hidden;background:linear-gradient(160deg,#14131b,#0b0a0f);border:1px solid var(--line);box-shadow:0 40px 90px -40px rgba(0,0,0,.9);will-change:transform,opacity}
 .scard .simg{position:absolute;inset:0}
-.scard .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,.05) 0%,rgba(8,8,8,.55) 45%,rgba(8,8,8,.95) 100%);pointer-events:none}
+.scard .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,.05) 0%,rgba(8,8,8,.3) 34%,rgba(8,8,8,.86) 60%,rgba(8,8,8,.97) 100%);pointer-events:none}
 .scard .sbadge{position:absolute;z-index:3;top:18px;left:18px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:100px;color:var(--purple-2);background:rgba(8,8,8,.6);border:1px solid rgba(139,124,248,.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 /* só o card da frente mostra texto — senão as legendas dos vizinhos se sobrepõem */
 .scard .sbody{position:absolute;left:0;right:0;bottom:0;padding:26px 26px 28px;display:flex;flex-direction:column;gap:10px;opacity:0;transition:opacity .3s ease}
@@ -153,17 +156,24 @@ footer{padding:44px 0 60px;border-top:1px solid var(--line);color:var(--gray-dim
 @media (max-width:720px){
 .wrap{padding:0 18px}
 .hero{padding:140px 0 60px}
-.stage{height:420px;margin:0 -18px}
-.scard{width:min(78vw,300px);height:360px;border-radius:22px}
+.stage{height:470px;margin:0 -18px}
+.scard{width:min(78vw,300px);height:410px;border-radius:22px}
 .scard .sbody{padding:20px}
 .scard .sbody h3{font-size:20px}
-.scard .sbody p{font-size:14px}
+/* espaço é curto no card pequeno — corta a descrição em 2 linhas pra legenda
+   não subir por cima do print */
+.scard .sbody p{font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .sitem{top:5vh;height:84vh;min-height:460px;margin-bottom:10vh}
 .pcard,.pcard::after{border-radius:24px}
 .box{padding:52px 24px;border-radius:28px}
 .brand-name{font-size:16px}
 .stat{padding:26px 22px}
 .ph-body{padding-bottom:30%}
+/* o print é 2:1 e os cards no celular são bem mais altos — um corte preenche
+   melhor que a imagem inteira encolhida no topo. O card do carrossel é menor
+   e precisa sobrar espaço escuro pra legenda ficar legível. */
+.pcard .ph-shot{aspect-ratio:4/3;object-fit:cover;object-position:top center}
+.scard .ph-shot{aspect-ratio:16/10;object-fit:cover;object-position:top center}
 }
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important}html{scroll-behavior:auto}}
 </style>
@@ -247,19 +257,19 @@ footer{padding:44px 0 60px;border-top:1px solid var(--line);color:var(--gray-dim
    adicionar `src:'assets/proj-NOME.png'` no projeto correspondente.
 ------------------------------------------------------------------ */
 const PROJECTS=[
- {id:'cristiana',name:'Cristiana Stringhi',cat:'terapias',badge:'Terapias',desc:'Terapeuta holística — presença digital que transmite acolhimento antes do primeiro contato.',url:'https://cristianastringhi.com.br'},
- {id:'mary-fialho',name:'Mary Fialho',cat:'estetica',badge:'Estética',desc:'Lash designer — site feito para mostrar o trabalho e encher a agenda.',url:'https://fialho.app.br'},
- {id:'janice',name:'Janice Grutzmann',cat:'terapias',badge:'Terapias',desc:'Terapeuta holística em Passo Fundo/RS — autoridade e agendamento direto no WhatsApp.',url:'https://site-janice-knza.vercel.app'},
- {id:'nice',name:'Nice Gehlen',cat:'terapias',badge:'Terapias',desc:'Massoterapeuta em Passo Fundo/RS — sessões e benefícios explicados de forma simples.',url:'https://site-nice.vercel.app'},
- {id:'casa-flor',name:'Casa Terapêutica Flor da Vida',cat:'terapias',badge:'Terapias',desc:'Reiki e terapias holísticas em Uruguaiana/RS — um espaço que respira calma na tela.',url:'https://site-casa-flor.vercel.app'},
- {id:'eduarda',name:'Maria Eduarda Menezes',cat:'psicologia',badge:'Psicologia',desc:'Psicóloga clínica em Cruz Alta/RS — linguagem sóbria e caminho claro até a consulta.',url:'https://site-eduarda-kappa.vercel.app'},
- {id:'graciela',name:'Graciela Prieto',cat:'estetica',badge:'Estética',desc:'Massoterapia & beauty em Pelotas/RS — dois serviços, uma marca só.',url:'https://site-graciela.vercel.app'},
- {id:'gabriela',name:'Gabriela Kanaan',cat:'psicologia',badge:'Psicologia',desc:'Psicóloga em Pelotas/RS — site que acolhe e converte sem parecer consultório frio.',url:'https://site-gabriela-kanaan.vercel.app'},
- {id:'kauana',name:'Kauana Liesenfeld',cat:'estetica',badge:'Estética',desc:'Massoterapeuta e esteticista em Gramado/RS — clientela local e turista no mesmo site.',url:'https://kauana-liesenfeld.vercel.app'},
- {id:'benditas',name:'Benditas Estética',cat:'estetica',badge:'Estética',desc:'Salão de beleza em Pelotas/RS — vitrine de serviços com agendamento em um toque.',url:'https://benditas-estetica.vercel.app'},
- {id:'janaina',name:'Janaína Larré',cat:'estetica',badge:'Estética',desc:'Esteticista em Pelotas/RS — protocolos e resultados apresentados com clareza.',url:'https://site-janaina-orpin.vercel.app'},
- {id:'bem-me-quero',name:'Bem Me Quero',cat:'estetica',badge:'Estética',desc:'Estética e beleza em Pelotas/RS — identidade leve para um público que valoriza cuidado.',url:'https://site-bem-me-quero.vercel.app'},
- {id:'josiane',name:'Josiane Pilar Makeup',cat:'estetica',badge:'Estética',desc:'Maquiadora em Pelotas/RS — noivas e formandas encontram o portfólio em segundos.',url:'https://site-josiane.vercel.app'}
+ {id:'cristiana',name:'Cristiana Stringhi',cat:'terapias',badge:'Terapias',desc:'Terapeuta holística — presença digital que transmite acolhimento antes do primeiro contato.',url:'https://cristianastringhi.com.br',src:'assets/proj-cristiana.webp'},
+ {id:'mary-fialho',name:'Mary Fialho',cat:'estetica',badge:'Estética',desc:'Lash designer — site feito para mostrar o trabalho e encher a agenda.',url:'https://fialho.app.br',src:'assets/proj-mary-fialho.webp'},
+ {id:'janice',name:'Janice Grutzmann',cat:'terapias',badge:'Terapias',desc:'Terapeuta holística em Passo Fundo/RS — autoridade e agendamento direto no WhatsApp.',url:'https://site-janice-knza.vercel.app',src:'assets/proj-janice.webp'},
+ {id:'nice',name:'Nice Gehlen',cat:'terapias',badge:'Terapias',desc:'Massoterapeuta em Passo Fundo/RS — sessões e benefícios explicados de forma simples.',url:'https://site-nice.vercel.app',src:'assets/proj-nice.webp'},
+ {id:'casa-flor',name:'Casa Terapêutica Flor da Vida',cat:'terapias',badge:'Terapias',desc:'Reiki e terapias holísticas em Uruguaiana/RS — um espaço que respira calma na tela.',url:'https://site-casa-flor.vercel.app',src:'assets/proj-casa-flor.webp'},
+ {id:'eduarda',name:'Maria Eduarda Menezes',cat:'psicologia',badge:'Psicologia',desc:'Psicóloga clínica em Cruz Alta/RS — linguagem sóbria e caminho claro até a consulta.',url:'https://site-eduarda-kappa.vercel.app',src:'assets/proj-eduarda.webp'},
+ {id:'graciela',name:'Graciela Prieto',cat:'estetica',badge:'Estética',desc:'Massoterapia & beauty em Pelotas/RS — dois serviços, uma marca só.',url:'https://site-graciela.vercel.app',src:'assets/proj-graciela.webp'},
+ {id:'gabriela',name:'Gabriela Kanaan',cat:'psicologia',badge:'Psicologia',desc:'Psicóloga em Pelotas/RS — site que acolhe e converte sem parecer consultório frio.',url:'https://site-gabriela-kanaan.vercel.app',src:'assets/proj-gabriela.webp'},
+ {id:'kauana',name:'Kauana Liesenfeld',cat:'estetica',badge:'Estética',desc:'Massoterapeuta e esteticista em Gramado/RS — clientela local e turista no mesmo site.',url:'https://kauana-liesenfeld.vercel.app',src:'assets/proj-kauana.webp'},
+ {id:'benditas',name:'Benditas Estética',cat:'estetica',badge:'Estética',desc:'Salão de beleza em Pelotas/RS — vitrine de serviços com agendamento em um toque.',url:'https://benditas-estetica.vercel.app',src:'assets/proj-benditas.webp'},
+ {id:'janaina',name:'Janaína Larré',cat:'estetica',badge:'Estética',desc:'Esteticista em Pelotas/RS — protocolos e resultados apresentados com clareza.',url:'https://site-janaina-orpin.vercel.app',src:'assets/proj-janaina.webp'},
+ {id:'bem-me-quero',name:'Bem Me Quero',cat:'estetica',badge:'Estética',desc:'Estética e beleza em Pelotas/RS — identidade leve para um público que valoriza cuidado.',url:'https://site-bem-me-quero.vercel.app',src:'assets/proj-bem-me-quero.webp'},
+ {id:'josiane',name:'Josiane Pilar Makeup',cat:'estetica',badge:'Estética',desc:'Maquiadora em Pelotas/RS — noivas e formandas encontram o portfólio em segundos.',url:'https://site-josiane.vercel.app',src:'assets/proj-josiane.webp'}
 ];
 
 const CATS=[{f:'all',label:'Todos'},{f:'estetica',label:'Estética'},{f:'terapias',label:'Terapias'},{f:'psicologia',label:'Psicologia'}];
@@ -268,15 +278,17 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const domain=u=>u.replace(/^https?:\/\//,'').replace(/\/+$/,'');
 const initials=n=>n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 
-/* Print real quando existe; senão, mockup de navegador com a marca do projeto. */
-function preview(p){
-  if(p.src) return `<img src="${esc(p.src)}" alt="Print do site de ${esc(p.name)}" loading="lazy" decoding="async" />`;
+/* Frame de navegador com o domínio real. Dentro dele vai o print do site
+   quando existe; senão, as iniciais do cliente. */
+function preview(p,eager){
+  const bar=`<div class="ph-bar"><i></i><i></i><i></i><span class="ph-url">${esc(domain(p.url))}</span></div>`;
+  if(p.src) return `<div class="ph">${bar}<div class="ph-body has-shot">
+    <img class="ph-shot" src="${esc(p.src)}" alt="Print do site de ${esc(p.name)}" ${eager?'':'loading="lazy" '}decoding="async" />
+  </div></div>`;
   return `<div class="ph" role="img" aria-label="Prévia do site de ${esc(p.name)} — ${esc(domain(p.url))}">
-    <div class="ph-bar"><i></i><i></i><i></i><span class="ph-url">${esc(domain(p.url))}</span></div>
-    <div class="ph-body"><span class="ph-mono">${esc(initials(p.name))}</span></div>
+    ${bar}<div class="ph-body"><span class="ph-mono">${esc(initials(p.name))}</span></div>
   </div>`;
 }
-const mock=p=>p.src?'':' mock';
 
 /* ---- filtros ---- */
 const filtersEl=document.getElementById('filters');
@@ -286,8 +298,8 @@ filtersEl.innerHTML=CATS.map((c,i)=>{
 }).join('');
 
 /* ---- stack de projetos (scroll) ---- */
-document.getElementById('grid').innerHTML=PROJECTS.map((p,i)=>`<div class="sitem" data-cat="${p.cat}"><article class="pcard${mock(p)}">
-<div class="shot">${preview(p)}</div>
+document.getElementById('grid').innerHTML=PROJECTS.map((p,i)=>`<div class="sitem" data-cat="${p.cat}"><article class="pcard">
+<div class="shot">${preview(p,!i)}</div>
 <div class="veil-p"></div><span class="badge">${esc(p.badge)}</span><span class="pnum">${String(i+1).padStart(2,'0')} / ${PROJECTS.length}</span>
 <div class="pbody"><h3>${esc(p.name)}</h3><p class="pdesc">${esc(p.desc)}</p><a class="plink" href="${esc(p.url)}" target="_blank" rel="noopener">Ver site ${arrow}</a></div>
 </article></div>`).join('');
@@ -323,8 +335,8 @@ addEventListener('resize',stackFx);stackFx();
 
 /* ---- carrossel de cards empilhados ---- */
 const stage=document.getElementById('stage'),dotsEl=document.getElementById('sDots');
-stage.innerHTML=PROJECTS.map(p=>`<article class="scard${mock(p)}" data-url="${esc(p.url)}">
-<div class="simg">${preview(p)}</div>
+stage.innerHTML=PROJECTS.map((p,i)=>`<article class="scard" data-url="${esc(p.url)}">
+<div class="simg">${preview(p,i<3)}</div>
 <div class="veil"></div><span class="sbadge">${esc(p.badge)}</span>
 <div class="sbody"><h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p><span class="sgo">Ver site ${arrow}</span></div>
 </article>`).join('');
