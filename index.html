@@ -76,7 +76,8 @@ header{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 0;background:
 .sitem.hide{display:none}
 .pcard{position:relative;display:block;height:100%;border-radius:32px;overflow:hidden;background:linear-gradient(160deg,#14131b,#0b0a0f);border:1px solid var(--line);box-shadow:0 50px 120px -50px rgba(0,0,0,.95)}
 .pcard::after{content:"";position:absolute;inset:0;border-radius:32px;box-shadow:inset 0 0 0 1px rgba(139,124,248,.14);pointer-events:none}
-.shot{position:absolute;inset:0}
+/* a prévia é decorativa: nunca pode capturar clique, senão cobre o "Ver site" */
+.shot{position:absolute;inset:0;pointer-events:none}
 .veil-p{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,.25) 0%,rgba(8,8,8,.2) 35%,rgba(8,8,8,.82) 72%,rgba(8,8,8,.97) 100%);pointer-events:none}
 .pbody{position:absolute;left:0;right:0;bottom:0;padding:clamp(26px,4vw,54px);display:flex;flex-direction:column;align-items:flex-start;gap:14px}
 .pcard h3{font-size:clamp(28px,4.4vw,52px)}
@@ -90,7 +91,9 @@ header{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 0;background:
 /* preview do site: frame de navegador com o print real dentro (ou as iniciais,
    enquanto o print não existe). O print mantém a proporção em vez de ser
    cortado com object-fit:cover — num card alto viraria uma fatia com zoom. */
-.ph{position:absolute;inset:0;display:flex;flex-direction:column;background:linear-gradient(160deg,#1a1826 0%,#100e18 55%,#0a090f 100%)}
+/* isolation: o z-index da barra e do corpo tem que ficar preso aqui dentro,
+   senão sobe acima da legenda do card e engole o clique do botão */
+.ph{position:absolute;inset:0;display:flex;flex-direction:column;isolation:isolate;background:linear-gradient(160deg,#1a1826 0%,#100e18 55%,#0a090f 100%)}
 .ph::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 65% 48% at 50% 24%,rgba(109,92,245,.3) 0%,transparent 70%)}
 .ph::after{content:"";position:absolute;inset:0;opacity:.5;background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000,transparent 75%)}
 .ph-bar{position:relative;z-index:2;flex:none;display:flex;align-items:center;gap:7px;height:40px;padding:0 16px;background:rgba(255,255,255,.045);border-bottom:1px solid var(--line)}
@@ -115,12 +118,14 @@ header{position:fixed;top:0;left:0;right:0;z-index:50;padding:18px 0;background:
 .stage{position:relative;height:520px;display:grid;place-items:center;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;overflow:hidden;margin:0 -24px;perspective:1400px}
 .stage.dragging{cursor:grabbing}
 .scard{position:absolute;width:420px;height:460px;border-radius:28px;overflow:hidden;background:linear-gradient(160deg,#14131b,#0b0a0f);border:1px solid var(--line);box-shadow:0 40px 90px -40px rgba(0,0,0,.9);will-change:transform,opacity}
-.scard .simg{position:absolute;inset:0}
+.scard .simg{position:absolute;inset:0;pointer-events:none}
 .scard .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,.05) 0%,rgba(8,8,8,.3) 34%,rgba(8,8,8,.86) 60%,rgba(8,8,8,.97) 100%);pointer-events:none}
 .scard .sbadge{position:absolute;z-index:3;top:18px;left:18px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:100px;color:var(--purple-2);background:rgba(8,8,8,.6);border:1px solid rgba(139,124,248,.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-/* só o card da frente mostra texto — senão as legendas dos vizinhos se sobrepõem */
-.scard .sbody{position:absolute;left:0;right:0;bottom:0;padding:26px 26px 28px;display:flex;flex-direction:column;gap:10px;opacity:0;transition:opacity .3s ease}
-.scard.active .sbody{opacity:1}
+/* só o card da frente mostra texto — senão as legendas dos vizinhos se sobrepõem.
+   Os invisíveis também não podem receber clique. */
+.scard .sbody{position:absolute;left:0;right:0;bottom:0;padding:26px 26px 28px;display:flex;flex-direction:column;gap:10px;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s;pointer-events:none}
+.scard.active .sbody{opacity:1;visibility:visible}
+.scard.active .sgo{pointer-events:auto}
 .scard .ph-mono{transition:opacity .3s ease}
 .scard:not(.active) .ph-mono{opacity:.3}
 .scard .sbody h3{font-size:24px}
@@ -338,12 +343,17 @@ const stage=document.getElementById('stage'),dotsEl=document.getElementById('sDo
 stage.innerHTML=PROJECTS.map((p,i)=>`<article class="scard" data-url="${esc(p.url)}">
 <div class="simg">${preview(p,i<3)}</div>
 <div class="veil"></div><span class="sbadge">${esc(p.badge)}</span>
-<div class="sbody"><h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p><span class="sgo">Ver site ${arrow}</span></div>
+<div class="sbody"><h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p><a class="sgo" href="${esc(p.url)}" target="_blank" rel="noopener">Ver site ${arrow}</a></div>
 </article>`).join('');
 dotsEl.innerHTML=PROJECTS.map((p,i)=>`<button class="sdot${i?'':' on'}" type="button" data-i="${i}" aria-label="Ir para ${esc(p.name)}"></button>`).join('');
 const scards=[...stage.querySelectorAll('.scard')],sdots=[...dotsEl.querySelectorAll('.sdot')],N=scards.length;
 const SPEED=0.16; // cards por segundo, deriva contínua
 let pos=0,vel=0,target=null,dragging=false,startX=0,dragBase=0,lastX=0,lastT=0,moved=0,paused=false,onScreen=true;
+/* a deriva automática é só um convite pra interagir. Assim que a pessoa toma o
+   controle ela para de vez: no celular não existe hover pra pausar, e tentar
+   acertar o "Ver site" num card que desliza é impossível. */
+let interacted=false;
+const takeOver=()=>{interacted=true};
 /* espaçamento entre cards: nunca menos que ~40% da largura do card, senão no
    celular os vizinhos cobrem quase todo o card da frente */
 const step=()=>Math.min(150,Math.max(stage.clientWidth*.22,(scards[0]?.offsetWidth||360)*.42));
@@ -375,13 +385,13 @@ function tick(now){
       if(Math.abs(target-pos)<.002){pos=target;target=null}
     }else{
       if(Math.abs(vel)>.001){pos+=vel*dt;vel*=Math.pow(.06,dt)}
-      else if(!paused&&!reduced&&onScreen)pos+=SPEED*dt;
+      else if(!paused&&!reduced&&onScreen&&!interacted)pos+=SPEED*dt;
     }
     pos=wrapN(pos);
   }
   render();requestAnimationFrame(tick);
 }
-function go(i){target=pos+((wrapN(i-pos)+N/2)%N)-N/2;vel=0}
+function go(i){takeOver();target=pos+((wrapN(i-pos)+N/2)%N)-N/2;vel=0}
 requestAnimationFrame(tick);
 
 /* pausa a deriva quando o carrossel sai da tela ou a aba perde o foco */
@@ -389,12 +399,27 @@ new IntersectionObserver(es=>{onScreen=es[0].isIntersecting},{threshold:0}).obse
 document.addEventListener('visibilitychange',()=>{prevT=performance.now()});
 stage.addEventListener('pointerenter',()=>{paused=true});
 stage.addEventListener('pointerleave',()=>{paused=false});
-stage.addEventListener('pointerdown',e=>{if(e.button)return;dragging=true;moved=0;startX=lastX=e.clientX;dragBase=pos;lastT=performance.now();vel=0;target=null;stage.classList.add('dragging');stage.setPointerCapture(e.pointerId)});
+stage.addEventListener('pointerdown',e=>{if(e.button)return;takeOver();dragging=true;moved=0;startX=lastX=e.clientX;dragBase=pos;lastT=performance.now();vel=0;target=null;stage.classList.add('dragging');stage.setPointerCapture(e.pointerId)});
 stage.addEventListener('pointermove',e=>{if(!dragging)return;const now=performance.now(),dt=Math.max(8,now-lastT);const inst=-(e.clientX-lastX)/step()/(dt/1000);vel=vel*.7+inst*.3;lastX=e.clientX;lastT=now;const dx=e.clientX-startX;moved=Math.max(moved,Math.abs(dx));pos=wrapN(dragBase-dx/step())});
 function endDrag(e){if(!dragging)return;dragging=false;stage.classList.remove('dragging');vel=Math.max(-9,Math.min(9,vel));
-  if(moved<8){vel=0;if(e){const c=e.target.closest('.scard');if(c&&c.classList.contains('active'))window.open(c.dataset.url,'_blank','noopener')}}}
+  if(moved>=8||!e)return;
+  vel=0;
+  /* o stage captura o ponteiro, então tanto o pointerup quanto o click nativo
+     são redirecionados pra ele — nem e.target serve, nem o link abre sozinho.
+     Descobrimos o alvo pela coordenada e abrimos na mão. */
+  const el=document.elementFromPoint(e.clientX,e.clientY);
+  if(!el)return;
+  const a=el.closest('a[href]');
+  if(a){window.open(a.href,'_blank','noopener');return}
+  const c=el.closest('.scard');
+  if(c&&c.classList.contains('active'))window.open(c.dataset.url,'_blank','noopener');
+}
 stage.addEventListener('pointerup',endDrag);stage.addEventListener('pointercancel',()=>endDrag());
 stage.addEventListener('dragstart',e=>e.preventDefault());
+/* quem abre é o endDrag — aqui bloqueamos o clique vindo de ponteiro pra não
+   abrir duas vezes (e pra arrastar por cima do link não abrir nada). Ativação
+   por teclado tem detail 0 e continua funcionando normalmente. */
+stage.addEventListener('click',e=>{if(e.detail>0)e.preventDefault()},true);
 document.getElementById('sPrev').onclick=()=>go(Math.round(pos)-1);
 document.getElementById('sNext').onclick=()=>go(Math.round(pos)+1);
 dotsEl.addEventListener('click',e=>{const d=e.target.closest('.sdot');if(d)go(+d.dataset.i)});
