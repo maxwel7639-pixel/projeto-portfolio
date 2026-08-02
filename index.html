@@ -259,8 +259,10 @@ footer{padding:44px 0 60px;border-top:1px solid var(--line);color:var(--gray-dim
 
 <script>
 /* ------------------------------------------------------------------
-   Projetos. Para trocar o mockup pelo print real do site, basta
-   adicionar `src:'assets/proj-NOME.png'` no projeto correspondente.
+   Projetos. A ordem daqui vale para o carrossel e para o stack de scroll.
+   Cada um tem dois prints, escolhidos por <picture> conforme a largura:
+   `src` (desktop, acima de 720px) e `srcMob` (celular, até 720px).
+   Sem `src`, o card cai no mockup com as iniciais do cliente.
 ------------------------------------------------------------------ */
 const PROJECTS=[
  {id:'cristiana',name:'Cristiana Stringhi',cat:'terapias',badge:'Terapias',desc:'Terapeuta holística — presença digital que transmite acolhimento antes do primeiro contato.',url:'https://cristianastringhi.com.br',src:'assets/proj-cristiana.webp',srcMob:'assets/mob-cristiana.webp'},
