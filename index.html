@@ -204,6 +204,47 @@ footer{padding:44px 0 60px;border-top:1px solid var(--line);color:var(--gray-dim
 .ph-shot{width:100%;height:auto;aspect-ratio:auto;object-fit:fill}
 }
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important}html{scroll-behavior:auto}}
+
+  /* ============ BANDEIRA (hero) ============
+     Adaptado do estudo "woven cloth" (Three.js). O componente de origem era
+     React servindo um HTML dentro de um iframe; aqui o iframe nao faz sentido,
+     porque a pagina ja e HTML. */
+  .hero-pano {
+    position: relative;
+    min-height: 100svh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: clamp(20px, 3vw, 34px);
+    padding: 90px 20px 40px;
+    overflow: hidden;
+  }
+  .pano-tela { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .pano-tela canvas { display: block; width: 100%; height: 100%; }
+  /* Vinheta: o pano e claro no meio, e sem isso o texto de baixo some nele. */
+  .pano-tela::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(88% 76% at 50% 42%, transparent 46%, rgba(6,5,9,.86) 100%);
+  }
+  .pano-sub, .pano-rolar { position: relative; z-index: 1; }
+  .pano-sub {
+    max-width: 640px; margin-top: auto; text-align: center;
+    font-size: clamp(15px, 1.6vw, 18px); line-height: 1.6;
+    color: rgba(255,255,255,.72);
+  }
+  .pano-rolar {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 22px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.18);
+    font-size: 13px; letter-spacing: .04em;
+    color: rgba(255,255,255,.9); text-decoration: none;
+    transition: border-color .2s, background-color .2s;
+  }
+  .pano-rolar:hover { border-color: rgba(255,255,255,.42); background: rgba(255,255,255,.05); }
+  .pano-rolar svg { width: 17px; height: 17px; }
+
+  /* Sem animacao: o pano roda 220 passos de uma vez e congela. A imagem fica
+     a mesma, so nao venta. */
+  @media (prefers-reduced-motion: reduce) { .pano-tela { opacity: .6; } }
 </style>
 </head>
 <body>
@@ -218,13 +259,21 @@ footer{padding:44px 0 60px;border-top:1px solid var(--line);color:var(--gray-dim
 </header>
 
 <main>
-<section class="hero">
-  <div class="wrap">
-    <div class="hero-inner">
-      <h1 class="reveal">Nossos <em class="hl" style="font-family:'Playfair Display',serif">Projetos</em></h1>
-      <p class="sub reveal">Sites que convertem para negócios locais de estética, terapias e bem-estar — feitos para transformar visitantes em agendamentos.</p>
-    </div>
-  </div>
+<!-- ============ BANDEIRA ============
+     O hero e um pano de verdade balancando ao vento, com o nome da MX e
+     "PORTFOLIO DE SITES" tecidos nele. O texto que estava aqui em HTML foi
+     PARA DENTRO do tecido: repetir "Nossos Projetos" por cima do pano seria
+     dizer a mesma coisa duas vezes na mesma tela.
+
+     A frase de posicionamento ficou, embaixo, porque ela nao cabe no pano sem
+     virar letra miuda. -->
+<section class="hero-pano" aria-label="Portfólio da MX Digital">
+  <div class="pano-tela"><canvas id="pano"></canvas></div>
+  <p class="pano-sub reveal">Sites que convertem para negócios locais de estética, terapias e bem-estar — feitos para transformar visitantes em agendamentos.</p>
+  <a class="pano-rolar" href="#como-funciona" aria-label="Ver os projetos">
+    <span>Ver os projetos</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+  </a>
 </section>
 
 <section class="stack-sec">
@@ -308,17 +357,19 @@ const PROJECTS=[
  {id:'benditas',name:'Benditas Estética',cat:'estetica',badge:'Estética',desc:'Salão de beleza em Pelotas/RS — vitrine de serviços com agendamento em um toque.',url:'https://benditas-estetica.vercel.app',src:'assets/proj-benditas.webp',srcMob:'assets/mob-benditas.webp'},
  {id:'kauana',name:'Kauana Liesenfeld',cat:'estetica',badge:'Estética',desc:'Massoterapeuta e esteticista em Gramado/RS — clientela local e turista no mesmo site.',url:'https://kauana-liesenfeld.vercel.app',src:'assets/proj-kauana.webp',srcMob:'assets/mob-kauana.webp'},
  {id:'bem-me-quero',name:'Bem Me Quero',cat:'estetica',badge:'Estética',desc:'Estética e beleza em Pelotas/RS — identidade leve para um público que valoriza cuidado.',url:'https://site-bem-me-quero.vercel.app',src:'assets/proj-bem-me-quero.webp',srcMob:'assets/mob-bem-me-quero.webp'},
- {id:'josiane',name:'Josiane Pilar Makeup',cat:'estetica',badge:'Estética',desc:'Maquiadora em Pelotas/RS — noivas e formandas encontram o portfólio em segundos.',url:'https://site-josiane.vercel.app',src:'assets/proj-josiane.webp',srcMob:'assets/mob-josiane.webp'},
  {id:'janice',name:'Janice Grutzmann',cat:'terapias',badge:'Terapias',desc:'Terapeuta holística em Passo Fundo/RS — autoridade e agendamento direto no WhatsApp.',url:'https://site-janice-knza.vercel.app',src:'assets/proj-janice.webp',srcMob:'assets/mob-janice.webp'},
- {id:'nice',name:'Nice Gehlen',cat:'terapias',badge:'Terapias',desc:'Massoterapeuta em Passo Fundo/RS — sessões e benefícios explicados de forma simples.',url:'https://site-nice.vercel.app',src:'assets/proj-nice.webp',srcMob:'assets/mob-nice.webp'},
  {id:'casa-flor',name:'Casa Terapêutica Flor da Vida',cat:'terapias',badge:'Terapias',desc:'Reiki e terapias holísticas em Uruguaiana/RS — um espaço que respira calma na tela.',url:'https://site-casa-flor.vercel.app',src:'assets/proj-casa-flor.webp',srcMob:'assets/mob-casa-flor.webp'},
- {id:'eduarda',name:'Maria Eduarda Menezes',cat:'psicologia',badge:'Psicologia',desc:'Psicóloga clínica em Cruz Alta/RS — linguagem sóbria e caminho claro até a consulta.',url:'https://site-eduarda-kappa.vercel.app',src:'assets/proj-eduarda.webp',srcMob:'assets/mob-eduarda.webp'},
- {id:'graciela',name:'Graciela Prieto',cat:'estetica',badge:'Estética',desc:'Massoterapia & beauty em Pelotas/RS — dois serviços, uma marca só.',url:'https://site-graciela.vercel.app',src:'assets/proj-graciela.webp',srcMob:'assets/mob-graciela.webp'},
- {id:'gabriela',name:'Gabriela Kanaan',cat:'psicologia',badge:'Psicologia',desc:'Psicóloga em Pelotas/RS — site que acolhe e converte sem parecer consultório frio.',url:'https://site-gabriela-kanaan.vercel.app',src:'assets/proj-gabriela.webp',srcMob:'assets/mob-gabriela.webp'},
- {id:'janaina',name:'Janaína Larré',cat:'estetica',badge:'Estética',desc:'Esteticista em Pelotas/RS — protocolos e resultados apresentados com clareza.',url:'https://site-janaina-orpin.vercel.app',src:'assets/proj-janaina.webp',srcMob:'assets/mob-janaina.webp'}
+ {id:'misturini',name:'Studio Misturini',cat:'fotografia',badge:'Fotografia',desc:'Casamentos e retratos em Canoas/RS — dois públicos, dois caminhos, um site só.',url:'https://studio-misturini.vercel.app',src:'assets/proj-misturini.webp',srcMob:'assets/mob-misturini.webp'},
+ {id:'marina-scheid',name:'Dra. Marina Scheid',cat:'estetica',badge:'Estética',desc:'Harmonização facial em Osório/RS — método explicado antes do procedimento.',url:'https://dra-marinascheid.vercel.app',src:'assets/proj-marina-scheid.webp',srcMob:'assets/mob-marina-scheid.webp'},
+ {id:'delicacy',name:'Delicacy',cat:'estetica',badge:'Estética',desc:'Estética e beleza em Torres/RS — a equipe inteira na abertura, e agendamento em um toque.',url:'https://delicacy-one.vercel.app',src:'assets/proj-delicacy.webp',srcMob:'assets/mob-delicacy.webp'},
+ {id:'emili',name:'Emili Luizi',cat:'fotografia',badge:'Fotografia',desc:'Fotografia pet em Canela e Canoas/RS — o cachorro do cliente é o hero da página.',url:'https://emili-luizi.vercel.app',src:'assets/proj-emili.webp',srcMob:'assets/mob-emili.webp'},
+ {id:'solange',name:'Solange Kappes',cat:'psicologia',badge:'Psicologia',desc:'Psicologia clínica em Gramado/RS — presencial e on-line, com agenda direta.',url:'https://solange-kappes.vercel.app',src:'assets/proj-solange.webp',srcMob:'assets/mob-solange.webp'},
+ {id:'sonho-e-luz',name:'Espaço Sonho e Luz',cat:'terapias',badge:'Terapias',desc:'Constelação familiar em Canoas/RS — um tema difícil explicado sem misticismo vazio.',url:'https://espa-o-sonho-e-luz.vercel.app',src:'assets/proj-sonho-e-luz.webp',srcMob:'assets/mob-sonho-e-luz.webp'},
+ {id:'mandala',name:'Mandala Terapias',cat:'terapias',badge:'Terapias',desc:'Reiki, tarô e radiestesia em Santa Maria/RS — acolhimento que aparece antes da conversa.',url:'https://mandala-terapias.vercel.app',src:'assets/proj-mandala.webp',srcMob:'assets/mob-mandala.webp'},
+ {id:'fisga',name:'Fisga',cat:'produto',badge:'Produto próprio',desc:'Ferramenta de prospecção da própria MX — busca negócios no Google Maps e devolve quem ainda não tem site.',url:'https://www.fisga.pro',src:'assets/proj-fisga.webp',srcMob:'assets/mob-fisga.webp'}
 ];
 
-const CATS=[{f:'all',label:'Todos'},{f:'estetica',label:'Estética'},{f:'terapias',label:'Terapias'},{f:'psicologia',label:'Psicologia'}];
+const CATS=[{f:'all',label:'Todos'},{f:'estetica',label:'Estética'},{f:'terapias',label:'Terapias'},{f:'fotografia',label:'Fotografia'},{f:'psicologia',label:'Psicologia'},{f:'produto',label:'Produto próprio'}];
 const arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const domain=u=>u.replace(/^https?:\/\//,'').replace(/\/+$/,'');
@@ -478,5 +529,244 @@ addEventListener('keydown',e=>{
 });
 addEventListener('resize',render);
 </script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" defer></script>
+<script defer>
+/* ================== BANDEIRA AO VENTO ====================================
+   Simulacao de tecido em Three.js, adaptada do estudo "woven cloth" que o
+   Maxwel trouxe do 21st.dev. O original era um componente React que servia um
+   HTML inteiro dentro de um iframe; aqui o iframe nao faz sentido, porque a
+   pagina JA e HTML. O canvas entra direto e o Three vem por CDN.
+
+   A fisica e a mesma do original: Verlet (posicao atual menos anterior vira
+   velocidade), tres passadas de restricao de distancia por quadro, a borda de
+   cima fixada, e vento como soma de senos que viaja pelo pano.
+
+   O que mudou:
+   - a textura e pintada com a marca da MX, nao com "LUMINA WEAVERS · KYOTO"
+   - as cores saem do roxo e do magenta da casa, nao do vermelho japones
+   - o pano para quando a aba perde o foco, e nao roda nada se a pagina ainda
+     nao apareceu (o hero tem preloader)
+   ========================================================================= */
+/* ATENCAO AO `defer` DESTE <script>: ele NAO faz nada.
+   `defer` so vale pra script EXTERNO, com src. Num script inline o atributo e
+   ignorado e o codigo roda na hora do parse -- ou seja, ANTES do three.min.js,
+   que e defer de verdade e so executa depois do DOM.
+
+   Custou um ciclo de screenshot: o `if (!window.THREE) return` abaixo pegava
+   THREE indefinido e saia em silencio, deixando o canvas no tamanho padrao de
+   300x150 sem erro nenhum no console. Por isso o corpo todo espera o
+   DOMContentLoaded, que dispara depois dos defer. */
+document.addEventListener('DOMContentLoaded', function () {
+  var canvas = document.getElementById('pano');
+  if (!canvas || !window.THREE) return;
+
+  var parado = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* ---------- a textura: a marca pintada no pano ---------- */
+  function textura() {
+    var W = 1280, H = 800;
+    var c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    var x = c.getContext('2d');
+
+    var g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#f2eef8');
+    g.addColorStop(0.5, '#e9e3f2');
+    g.addColorStop(1, '#ded6ec');
+    x.fillStyle = g;
+    x.fillRect(0, 0, W, H);
+
+    // A bainha, no roxo da marca
+    x.strokeStyle = '#6d28d9'; x.lineWidth = 10;
+    x.strokeRect(46, 46, W - 92, H - 92);
+    x.lineWidth = 3; x.strokeStyle = '#a21caf';
+    x.strokeRect(66, 66, W - 132, H - 132);
+
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+
+    x.fillStyle = '#6d28d9';
+    x.font = 'bold 78px Georgia, "Times New Roman", serif';
+    x.fillText('M X', W / 2, 190);
+
+    x.font = 'normal 20px "Helvetica Neue", Arial, sans-serif';
+    x.fillStyle = '#a21caf';
+    x.fillText('\u00b7 LAJEADO / RS \u00b7', W / 2, 246);
+
+    x.fillStyle = '#5b21b6';
+    x.font = 'bold 118px Georgia, "Times New Roman", serif';
+    x.fillText('PORTF\u00d3LIO', W / 2, 400);
+    x.fillText('DE SITES', W / 2, 520);
+
+    x.fillStyle = '#a21caf';
+    x.font = '600 30px "Helvetica Neue", Arial, sans-serif';
+    x.fillText('F E I T O S   P R A   V E N D E R', W / 2, 626);
+
+    // A trama: linhas finas nos dois sentidos, que e o que faz parecer tecido
+    // e nao papel. Sem isso o pano dobra como plastico.
+    for (var yy = 0; yy < H; yy += 3) {
+      x.strokeStyle = 'rgba(40,20,60,0.05)'; x.lineWidth = 1;
+      x.beginPath(); x.moveTo(0, yy + .5); x.lineTo(W, yy + .5); x.stroke();
+    }
+    for (var xx = 0; xx < W; xx += 3) {
+      x.strokeStyle = 'rgba(255,252,255,0.06)'; x.lineWidth = 1;
+      x.beginPath(); x.moveTo(xx + .5, 0); x.lineTo(xx + .5, H); x.stroke();
+    }
+
+    // Ruido de fio: tira a lisura digital do gradiente
+    var id = x.getImageData(0, 0, W, H), d = id.data;
+    for (var i = 0; i < d.length; i += 4) {
+      var n = (Math.random() * 2 - 1) * 9;
+      d[i] += n; d[i + 1] += n; d[i + 2] += n;
+    }
+    x.putImageData(id, 0, 0);
+
+    var t = new THREE.CanvasTexture(c);
+    t.anisotropy = 4;
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }
+
+  var cena = new THREE.Scene();
+  var render = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  render.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  var camera;
+
+  var BW = 4.4, BH = 2.75, GX = 40, GY = 26;
+  var geo = new THREE.PlaneGeometry(BW, BH, GX, GY);
+  var malha = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({
+    map: textura(), side: THREE.DoubleSide,
+    shininess: 6, specular: 0x2a1040, color: 0xffffff
+  }));
+  cena.add(malha);
+
+  cena.add(new THREE.AmbientLight(0xf0e6ff, 0.62));
+  var luz = new THREE.DirectionalLight(0xfff0ff, 1.15);
+  luz.position.set(-3, 3.5, 3.2); cena.add(luz);
+  var contra = new THREE.DirectionalLight(0x8b2fd4, 0.42);
+  contra.position.set(3, -1.5, 2.0); cena.add(contra);
+
+  /* ---------- Verlet ---------- */
+  var pos = geo.attributes.position;
+  var N = (GX + 1) * (GY + 1);
+  var atual = new Float32Array(N * 3), antes = new Float32Array(N * 3), base = new Float32Array(N * 3);
+  var preso = new Uint8Array(N);
+
+  for (var i = 0; i < N; i++) {
+    var ax = pos.getX(i), ay = pos.getY(i);
+    atual[i * 3] = antes[i * 3] = base[i * 3] = ax;
+    atual[i * 3 + 1] = antes[i * 3 + 1] = base[i * 3 + 1] = ay;
+    atual[i * 3 + 2] = antes[i * 3 + 2] = base[i * 3 + 2] = 0;
+  }
+  for (var ix = 0; ix <= GX; ix++) preso[ix] = 1;   // a borda de cima nao cai
+
+  var idx = function (ix, iy) { return ix + iy * (GX + 1); };
+  var dH = BW / GX, dV = BH / GY;
+  var GRAV = -3.1, ATRITO = 0.985, DT = 0.016;
+
+  function vento(ix, iy, t) {
+    var cx = ix / GX, cy = iy / GY;
+    var viaja = t * 1.7 - cy * 4.2;
+    var rajada = 0.6 + 0.42 * Math.sin(t * 0.6) + 0.18 * Math.sin(t * 1.9 + 1.3);
+    var amp = 4.3 * cy;
+    return [
+      Math.sin(t * 0.9 + cy * 2.2) * 0.6 * cy,
+      -0.4 * cy,
+      (Math.sin(viaja + cx * 3.3) + 0.5 * Math.sin(viaja * 1.7 + cx * 6.0)) * amp * rajada
+    ];
+  }
+
+  function corda(a, b, alvo) {
+    var dx = atual[b * 3] - atual[a * 3];
+    var dy = atual[b * 3 + 1] - atual[a * 3 + 1];
+    var dz = atual[b * 3 + 2] - atual[a * 3 + 2];
+    var d = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1e-6;
+    var f = (d - alvo) / d * 0.5;
+    dx *= f; dy *= f; dz *= f;
+    var pa = preso[a], pb = preso[b];
+    if (!pa && !pb) {
+      atual[a * 3] += dx; atual[a * 3 + 1] += dy; atual[a * 3 + 2] += dz;
+      atual[b * 3] -= dx; atual[b * 3 + 1] -= dy; atual[b * 3 + 2] -= dz;
+    } else if (pa && !pb) {
+      atual[b * 3] -= dx * 2; atual[b * 3 + 1] -= dy * 2; atual[b * 3 + 2] -= dz * 2;
+    } else if (!pa && pb) {
+      atual[a * 3] += dx * 2; atual[a * 3 + 1] += dy * 2; atual[a * 3 + 2] += dz * 2;
+    }
+  }
+
+  function passo(t) {
+    for (var iy = 0; iy <= GY; iy++) {
+      for (var ix = 0; ix <= GX; ix++) {
+        var i = idx(ix, iy);
+        if (preso[i]) continue;
+        var f = vento(ix, iy, t);
+        for (var k = 0; k < 3; k++) {
+          var j = i * 3 + k;
+          var a = k === 0 ? f[0] : k === 1 ? (f[1] + GRAV) : f[2];
+          var v = (atual[j] - antes[j]) * ATRITO;
+          antes[j] = atual[j];
+          atual[j] = atual[j] + v + a * DT * DT;
+        }
+      }
+    }
+    for (var it = 0; it < 3; it++) {
+      for (var y1 = 0; y1 <= GY; y1++)
+        for (var x1 = 0; x1 < GX; x1++) corda(idx(x1, y1), idx(x1 + 1, y1), dH);
+      for (var y2 = 0; y2 < GY; y2++)
+        for (var x2 = 0; x2 <= GX; x2++) corda(idx(x2, y2), idx(x2, y2 + 1), dV);
+    }
+    for (var b = 0; b <= GX; b++) {
+      atual[b * 3] = antes[b * 3] = base[b * 3];
+      atual[b * 3 + 1] = antes[b * 3 + 1] = base[b * 3 + 1];
+      atual[b * 3 + 2] = antes[b * 3 + 2] = base[b * 3 + 2];
+    }
+  }
+
+  function grava() {
+    for (var i = 0; i < N; i++) pos.setXYZ(i, atual[i * 3], atual[i * 3 + 1], atual[i * 3 + 2]);
+    pos.needsUpdate = true;
+    geo.computeVertexNormals();
+  }
+
+  function ajusta() {
+    var r = canvas.parentElement.getBoundingClientRect();
+    var w = Math.max(1, r.width), h = Math.max(1, r.height);
+    render.setSize(w, h, false);
+    var aspecto = w / h;
+    camera = new THREE.PerspectiveCamera(42, aspecto, 0.1, 100);
+    var vFit = (BH / 2) / Math.tan(42 * Math.PI / 360);
+    var hFit = (BW / 2) / Math.tan(42 * Math.PI / 360) / aspecto;
+    camera.position.set(0, 0.05, Math.max(vFit, hFit) * 1.16 + 0.4);
+    camera.lookAt(0, 0, 0);
+  }
+  window.addEventListener('resize', ajusta);
+  ajusta();
+
+  var rodando = false, pedido = 0, t = 0;
+  function quadro() {
+    if (!rodando) return;
+    t += DT; passo(t); grava();
+    render.render(cena, camera);
+    pedido = requestAnimationFrame(quadro);
+  }
+  function liga() { if (!rodando) { rodando = true; pedido = requestAnimationFrame(quadro); } }
+  function para() { rodando = false; cancelAnimationFrame(pedido); }
+
+  if (parado) {
+    // Roda 220 passos de uma vez e congela: a imagem fica a mesma, so nao venta.
+    for (var p = 0; p < 220; p++) passo(p * DT);
+    grava(); render.render(cena, camera);
+  } else {
+    for (var q = 0; q < 40; q++) passo(q * DT);   // ja comeca ondulado
+    t = 40 * DT;
+    liga();
+    document.addEventListener('visibilitychange', function () {
+      document.hidden ? para() : liga();
+    });
+  }
+});
+</script>
+
+
 </body>
 </html>
