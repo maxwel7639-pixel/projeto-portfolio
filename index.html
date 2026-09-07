@@ -3,18 +3,43 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta property="og:image" content="https://projeto-portfolio-blue.vercel.app/assets/og-portfolio-bandeira.jpg" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Bandeira com o nome da MX Digital e a frase Portfólio de Sites" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="MX Digital" />
+<meta property="og:title" content="Portfólio de sites — MX Digital" />
+<meta property="og:description" content="15 sites no ar para estética, terapias, psicologia e fotografia no RS. Feitos pra vender." />
+<meta property="og:url" content="https://projeto-portfolio-blue.vercel.app/" />
+<meta property="og:locale" content="pt_BR" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Portfólio de sites — MX Digital" />
+<meta name="twitter:description" content="15 sites no ar para estética, terapias, psicologia e fotografia no RS. Feitos pra vender." />
+<meta name="twitter:image" content="https://projeto-portfolio-blue.vercel.app/assets/og-portfolio-bandeira.jpg" />
+<meta name="twitter:image:alt" content="Bandeira com o nome da MX Digital e a frase Portfólio de Sites" />
+
 <title>Portfólio de sites — MX Digital</title>
 <meta name="description" content="15 sites no ar para estética, terapias, psicologia e fotografia no RS. Portfólio da MX Digital, agência de Lajeado/RS." /> />
 <meta name="theme-color" content="#080808" />
 <meta name="robots" content="index,follow" />
-<!-- URL real do portfólio. Se um dia ele for pra mxdigital.ia.br/projetos,
-     é só trocar aqui, no og:url e nas duas imagens. -->
 <link rel="canonical" href="https://projeto-portfolio-blue.vercel.app/" />
 <link rel="icon" type="image/png" href="assets/logo-mx.png" />
 <link rel="apple-touch-icon" href="assets/logo-mx.png" />
 
-<meta property="og:type" content="website" />
-<meta property="og:site_name" content="MX Digital" />
+<!-- ===== notas, fora do caminho do robo de preview =====
+
+     O bloco de compartilhamento fica no COMECO do head, e de proposito: o
+     leitor de preview do WhatsApp le so o inicio do documento, e comentario
+     comprido empurra a og:image para fora do alcance dele. Medido em
+     07/09/2026: neste site a tag estava no byte 2596 e o preview vinha sem
+     imagem; no mxdigital.ia.br, que funciona, ela esta no byte 982.
+
+     NAO PONHA NADA LONGO entre a abertura do head e a og:image. -->
+<!-- URL real do portfólio. Se um dia ele for pra mxdigital.ia.br/projetos,
+     é só trocar aqui, no og:url e nas duas imagens. -->
 <!-- NUNCA ESCREVA TAG LITERAL EM COMENTARIO DENTRO DO HEAD.
 
      Aqui estava o nome da tag de titulo de nivel 1, escrito entre os sinais de
@@ -29,29 +54,15 @@
 
      O texto que estava aqui: o titulo grande "Nossos Projetos" saiu quando a
      bandeira entrou, e agora esta tecido no proprio pano. -->
-<meta property="og:title" content="Portfólio de sites — MX Digital" />
 <!-- ESTE NUMERO E CONTADO, nao arredondado: e o tamanho de PROJECTS la
      embaixo. Estava em 13 e ficou desatualizado no dia em que a lista
      mudou; se mexer nos projetos, mexa aqui na mesma passada. -->
-<meta property="og:description" content="15 sites no ar para estética, terapias, psicologia e fotografia no RS. Feitos pra vender." />
 <!-- TROCAR A IMAGEM = TROCAR O NOME DO ARQUIVO. Nunca sobrescrever no lugar.
      O cache de preview do WhatsApp guarda a imagem pela URL e nao pergunta se
      ela mudou. Em 07/09/2026 o `og-portfolio.jpg` (de 02/08) ganhou a bandeira
      por dentro, com o mesmo nome: a pagina era relida certinho e o WhatsApp
      seguia mostrando o desenho de agosto, sem jeito de forcar atualizacao.
      Nome novo = URL que nenhum cache conhece = todo mundo baixa de novo. -->
-<meta property="og:image" content="https://projeto-portfolio-blue.vercel.app/assets/og-portfolio-bandeira.jpg" />
-<meta property="og:image:type" content="image/jpeg" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="Bandeira com o nome da MX Digital e a frase Portfólio de Sites" />
-<meta property="og:url" content="https://projeto-portfolio-blue.vercel.app/" />
-<meta property="og:locale" content="pt_BR" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Portfólio de sites — MX Digital" />
-<meta name="twitter:description" content="15 sites no ar para estética, terapias, psicologia e fotografia no RS. Feitos pra vender." />
-<meta name="twitter:image" content="https://projeto-portfolio-blue.vercel.app/assets/og-portfolio-bandeira.jpg" />
-<meta name="twitter:image:alt" content="Bandeira com o nome da MX Digital e a frase Portfólio de Sites" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
