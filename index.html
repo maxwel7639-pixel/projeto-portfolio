@@ -70,7 +70,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet" />
 <style>
 :root{--bg:#080808;--bg-soft:#0d0c11;--purple:#8B2FD4;--purple-2:#A855F7;--purple-grad:linear-gradient(135deg,#8B2FD4 0%,#A855F7 100%);--magenta:#d81b93;--magenta-2:#ff3db0;--magenta-grad:linear-gradient(135deg,#d81b93 0%,#ff3db0 100%);--white:#fff;--gray:#b9b6c4;--gray-dim:#7c7990;--line:rgba(255,255,255,.08);--card:rgba(255,255,255,.025);--radius:24px;--maxw:1320px;--font-display:"Bricolage Grotesque",sans-serif;--font-body:"Inter",sans-serif}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -319,7 +319,10 @@ footer{padding:44px 0 60px;border-top:1px solid var(--line);color:var(--gray-dim
 <header>
   <div class="wrap nav">
     <a href="https://mxdigital.ia.br" class="brand">
-      <img src="assets/logo-mx.png" alt="MX Digital" class="brand-logo" width="40" height="40" />
+      <!-- 80px de lado pra dar conta de tela retina num espaco de 40. O
+           `logo-mx.png` cheio tem 576x573 e 157 KB: era o segundo arquivo mais
+           pesado da pagina, baixado inteiro pra desenhar 40 pixels. -->
+      <img src="assets/logo-mx-80.png" alt="MX Digital" class="brand-logo" width="40" height="40" />
       <span class="brand-name">MX <span>DIGITAL</span></span>
     </a>
     <a href="https://mxdigital.ia.br" class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Voltar ao site</a>
@@ -609,10 +612,14 @@ const takeOver=()=>{interacted=true};
 /* espaçamento entre cards: nunca menos que ~40% da largura do card, senão no
    celular os vizinhos cobrem quase todo o card da frente */
 const step=()=>Math.min(150,Math.max(stage.clientWidth*.22,(scards[0]?.offsetWidth||360)*.42));
+/* A largura fica GUARDADA. `step()` le clientWidth e offsetWidth, e chamar isso
+   de dentro do render, no meio das escritas de estilo, obriga o navegador a
+   refazer o layout a cada quadro. Agora so recalcula quando a janela muda. */
+let larguraPasso=step();
 const wrapN=v=>((v%N)+N)%N;
 const rel=i=>{let o=i-pos;o=((o%N)+N)%N;return o>N/2?o-N:o};
 function render(){
-  const w=step();
+  const w=larguraPasso;
   /* o card da frente é sempre o mais próximo do centro — assim a legenda e o
      botão não piscam enquanto o baralho desliza */
   const front=wrapN(Math.round(pos));
@@ -632,7 +639,9 @@ function render(){
 }
 const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
 let prevT=performance.now();
+let posDesenhada=null,rodando=false,pedido=0;
 function tick(now){
+  if(!rodando)return;
   const dt=Math.min(.05,(now-prevT)/1000);prevT=now;
   if(!dragging){
     if(target!==null){
@@ -644,17 +653,26 @@ function tick(now){
     }
     pos=wrapN(pos);
   }
-  render();requestAnimationFrame(tick);
+  /* Desenha SO quando a posicao mudou de verdade. Antes, `render()` reescrevia
+     transform, opacidade e z-index dos 15 cards e dos 15 pontinhos em todo
+     quadro, para sempre, mesmo com o baralho parado. Num celular isso ocupa a
+     CPU o tempo inteiro e a rolagem da pagina engasga. */
+  if(pos!==posDesenhada){render();posDesenhada=pos}
+  pedido=requestAnimationFrame(tick);
 }
-function go(i){takeOver();target=pos+((wrapN(i-pos)+N/2)%N)-N/2;vel=0}
-requestAnimationFrame(tick);
+function liga(){if(!rodando){rodando=true;prevT=performance.now();pedido=requestAnimationFrame(tick)}}
+function para(){rodando=false;cancelAnimationFrame(pedido)}
+function go(i){takeOver();target=pos+((wrapN(i-pos)+N/2)%N)-N/2;vel=0;liga()}
+render();posDesenhada=pos;
+liga();
 
-/* pausa a deriva quando o carrossel sai da tela ou a aba perde o foco */
-new IntersectionObserver(es=>{onScreen=es[0].isIntersecting},{threshold:0}).observe(stage);
-document.addEventListener('visibilitychange',()=>{prevT=performance.now()});
+/* O laco PARA DE VERDADE quando o carrossel sai da tela ou a aba perde o foco.
+   Antes so a deriva parava; o laco seguia rodando e desenhando. */
+new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;onScreen?liga():para()},{threshold:0}).observe(stage);
+document.addEventListener('visibilitychange',()=>{prevT=performance.now();document.hidden?para():liga()});
 stage.addEventListener('pointerenter',()=>{paused=true});
 stage.addEventListener('pointerleave',()=>{paused=false});
-stage.addEventListener('pointerdown',e=>{if(e.button)return;takeOver();dragging=true;moved=0;startX=lastX=e.clientX;dragBase=pos;lastT=performance.now();vel=0;target=null;stage.classList.add('dragging');stage.setPointerCapture(e.pointerId)});
+stage.addEventListener('pointerdown',e=>{if(e.button)return;liga();takeOver();dragging=true;moved=0;startX=lastX=e.clientX;dragBase=pos;lastT=performance.now();vel=0;target=null;stage.classList.add('dragging');stage.setPointerCapture(e.pointerId)});
 stage.addEventListener('pointermove',e=>{if(!dragging)return;const now=performance.now(),dt=Math.max(8,now-lastT);const inst=-(e.clientX-lastX)/step()/(dt/1000);vel=vel*.7+inst*.3;lastX=e.clientX;lastT=now;const dx=e.clientX-startX;moved=Math.max(moved,Math.abs(dx));pos=wrapN(dragBase-dx/step())});
 function endDrag(e){if(!dragging)return;dragging=false;stage.classList.remove('dragging');vel=Math.max(-9,Math.min(9,vel));
   if(moved>=8||!e)return;
@@ -685,7 +703,9 @@ addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft'){e.preventDefault();go(Math.round(pos)-1)}
   if(e.key==='ArrowRight'){e.preventDefault();go(Math.round(pos)+1)}
 });
-addEventListener('resize',render);
+/* Aqui e o unico lugar que recalcula a largura do passo: `step()` le do layout,
+   e ler layout dentro do laco de animacao custa um recalculo por quadro. */
+addEventListener('resize',()=>{larguraPasso=step();render();posDesenhada=pos;liga()});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" defer></script>
 <script defer>
@@ -921,6 +941,18 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('visibilitychange', function () {
       document.hidden ? para() : liga();
     });
+    /* A bandeira e WebGL: simula o pano e redesenha 60 vezes por segundo. Ela
+       vive no hero, entao basta rolar um pouco pra ela sumir da tela -- e ate
+       hoje continuava simulando e desenhando do mesmo jeito, gastando CPU e
+       GPU pra ninguem ver. E o que fazia a rolagem engasgar no celular.
+       Agora para quando sai da tela e volta quando aparece. */
+    var visivel = true;
+    new IntersectionObserver(function (es) {
+      var agora = es[0].isIntersecting;
+      if (agora === visivel) return;
+      visivel = agora;
+      agora && !document.hidden ? liga() : para();
+    }, { threshold: 0 }).observe(canvas);
   }
 });
 </script>
