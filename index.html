@@ -15,14 +15,32 @@
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="MX Digital" />
-<!-- O titulo acompanha o hero: o <h1> "Nossos Projetos" saiu quando a
-     bandeira entrou, e o texto agora esta tecido no proprio pano. -->
+<!-- NUNCA ESCREVA TAG LITERAL EM COMENTARIO DENTRO DO HEAD.
+
+     Aqui estava o nome da tag de titulo de nivel 1, escrito entre os sinais de
+     menor e maior. Parser HTML5 de verdade ignora conteudo de comentario, mas
+     o do WhatsApp e leniente: leu aquilo como inicio do corpo, deu o head por
+     encerrado no byte 911 e nunca chegou no og:image, que fica no byte 1455.
+
+     Sintoma: o preview no WhatsApp vinha com titulo e descricao (que moram
+     antes, nos bytes 139 e 195) e SEM IMAGEM NENHUMA. Extratores com parser
+     correto achavam a imagem sem problema, o que fazia o defeito parecer
+     manha do WhatsApp em vez de erro nosso. Medido em 07/09/2026.
+
+     O texto que estava aqui: o titulo grande "Nossos Projetos" saiu quando a
+     bandeira entrou, e agora esta tecido no proprio pano. -->
 <meta property="og:title" content="Portfólio de sites — MX Digital" />
 <!-- ESTE NUMERO E CONTADO, nao arredondado: e o tamanho de PROJECTS la
      embaixo. Estava em 13 e ficou desatualizado no dia em que a lista
      mudou; se mexer nos projetos, mexa aqui na mesma passada. -->
 <meta property="og:description" content="15 sites no ar para estética, terapias, psicologia e fotografia no RS. Feitos pra vender." />
-<meta property="og:image" content="https://projeto-portfolio-blue.vercel.app/assets/og-portfolio.jpg" />
+<!-- TROCAR A IMAGEM = TROCAR O NOME DO ARQUIVO. Nunca sobrescrever no lugar.
+     O cache de preview do WhatsApp guarda a imagem pela URL e nao pergunta se
+     ela mudou. Em 07/09/2026 o `og-portfolio.jpg` (de 02/08) ganhou a bandeira
+     por dentro, com o mesmo nome: a pagina era relida certinho e o WhatsApp
+     seguia mostrando o desenho de agosto, sem jeito de forcar atualizacao.
+     Nome novo = URL que nenhum cache conhece = todo mundo baixa de novo. -->
+<meta property="og:image" content="https://projeto-portfolio-blue.vercel.app/assets/og-portfolio-bandeira.jpg" />
 <meta property="og:image:type" content="image/jpeg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -32,7 +50,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Portfólio de sites — MX Digital" />
 <meta name="twitter:description" content="15 sites no ar para estética, terapias, psicologia e fotografia no RS. Feitos pra vender." />
-<meta name="twitter:image" content="https://projeto-portfolio-blue.vercel.app/assets/og-portfolio.jpg" />
+<meta name="twitter:image" content="https://projeto-portfolio-blue.vercel.app/assets/og-portfolio-bandeira.jpg" />
 <meta name="twitter:image:alt" content="Bandeira com o nome da MX Digital e a frase Portfólio de Sites" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
