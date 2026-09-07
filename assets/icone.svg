@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MX Digital">
+  <!-- Favicon do portfolio, desenhado em vetor.
+       O anterior era `logo-mx.png`: uma FOTO do logo, 576x573 (nem quadrado),
+       157 KB, com fundo cinza claro e sombra. A 16 pixels o "MX DIGITAL"
+       sumia e sobrava um borrao claro, e o navegador baixava 157 KB pra
+       desenhar 16 pixels.
+       So o "MX" sobrevive a esse tamanho, entao so ele fica -- com o braco
+       roxo do X, que e a assinatura da marca. Fundo #080808 igual ao do site,
+       que da contraste tanto em aba clara quanto em aba escura.
+       Gerado por scratchpad/gera-icone.py: mexa la, nao aqui. -->
+  <rect width="64" height="64" rx="14" fill="#080808"/>
+  <g fill="none" stroke-width="6.0" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="7,44 7,21 16.5,36 26,21 26,44" stroke="#ffffff"/>
+    <path d="M36 21 L57 44" stroke="#ffffff"/>
+    <path d="M36 44 L46.5 32.5" stroke="#ffffff"/>
+    <path d="M46.5 32.5 L57 21" stroke="#8B2FD4"/>
+  </g>
+</svg>
