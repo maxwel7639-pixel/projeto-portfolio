@@ -15,8 +15,20 @@
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="MX Digital" />
-<!-- O titulo acompanha o hero: o <h1> "Nossos Projetos" saiu quando a
-     bandeira entrou, e o texto agora esta tecido no proprio pano. -->
+<!-- NUNCA ESCREVA TAG LITERAL EM COMENTARIO DENTRO DO HEAD.
+
+     Aqui estava o nome da tag de titulo de nivel 1, escrito entre os sinais de
+     menor e maior. Parser HTML5 de verdade ignora conteudo de comentario, mas
+     o do WhatsApp e leniente: leu aquilo como inicio do corpo, deu o head por
+     encerrado no byte 911 e nunca chegou no og:image, que fica no byte 1455.
+
+     Sintoma: o preview no WhatsApp vinha com titulo e descricao (que moram
+     antes, nos bytes 139 e 195) e SEM IMAGEM NENHUMA. Extratores com parser
+     correto achavam a imagem sem problema, o que fazia o defeito parecer
+     manha do WhatsApp em vez de erro nosso. Medido em 07/09/2026.
+
+     O texto que estava aqui: o titulo grande "Nossos Projetos" saiu quando a
+     bandeira entrou, e agora esta tecido no proprio pano. -->
 <meta property="og:title" content="Portfólio de sites — MX Digital" />
 <!-- ESTE NUMERO E CONTADO, nao arredondado: e o tamanho de PROJECTS la
      embaixo. Estava em 13 e ficou desatualizado no dia em que a lista
