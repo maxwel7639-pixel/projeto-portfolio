@@ -41,7 +41,9 @@
 <style>
 :root{--bg:#080808;--bg-soft:#0d0c11;--purple:#8B2FD4;--purple-2:#A855F7;--purple-grad:linear-gradient(135deg,#8B2FD4 0%,#A855F7 100%);--magenta:#d81b93;--magenta-2:#ff3db0;--magenta-grad:linear-gradient(135deg,#d81b93 0%,#ff3db0 100%);--white:#fff;--gray:#b9b6c4;--gray-dim:#7c7990;--line:rgba(255,255,255,.08);--card:rgba(255,255,255,.025);--radius:24px;--maxw:1320px;--font-display:"Bricolage Grotesque",sans-serif;--font-body:"Inter",sans-serif}
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+/* sem scroll-behavior:smooth: em celular ele briga com a inercia do dedo,
+   e a pagina volta um pouco antes de grudar no toque. A suavidade voltou
+   no clique de ancora, por JS. */
 body{background:var(--bg);color:var(--white);font-family:var(--font-body);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 ::selection{background:var(--purple);color:#fff}
 a{color:var(--purple-2);text-decoration:none}
@@ -891,5 +893,32 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
+
+<script>
+/* ============ ROLAGEM SUAVE, SO NO CLIQUE ============
+   Substitui o `scroll-behavior: smooth` do CSS, que valia pra toda rolagem
+   programatica e atrapalhava o toque no celular.
+
+   Aqui a animacao acontece exclusivamente quando alguem CLICA numa ancora.
+   Rolar com o dedo, com a roda ou com o teclado nao passa por este codigo.
+
+   Respeita prefers-reduced-motion: quem pediu menos movimento recebe o salto
+   direto, que e o comportamento nativo. */
+document.addEventListener('click', function (e) {
+  var link = e.target.closest('a[href^="#"]');
+  if (!link) return;
+  var id = link.getAttribute('href');
+  if (!id || id === '#') return;
+  var alvo = document.querySelector(id);
+  if (!alvo) return;
+
+  e.preventDefault();
+  var suave = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches);
+  alvo.scrollIntoView({ behavior: suave ? 'smooth' : 'auto', block: 'start' });
+  /* Mantem o endereco na barra e o historico funcionando, que e o que o
+     comportamento nativo da ancora faz de graca e o preventDefault tirou. */
+  if (history.pushState) history.pushState(null, '', id);
+});
+</script>
 </body>
 </html>
