@@ -1,0 +1,7 @@
+# Portfolio da MX Digital
+# Uma pagina so, publica, sem area logada e sem parametro de busca:
+# nao ha nada aqui pra bloquear.
+User-agent: *
+Allow: /
+
+Sitemap: https://www.portfoliomx.online/sitemap.xml
