@@ -82,10 +82,16 @@ scroll) ao mesmo tempo. Para promover um cliente, basta mover a linha dele.
 
 ## Meta tags e preview de link
 
-As URLs absolutas do `<head>` apontam para `https://projeto-portfolio-blue.vercel.app`,
-que é onde o portfólio está hoje. Se ele for para um domínio próprio (por
-exemplo `mxdigital.ia.br/projetos`), trocar em quatro lugares:
+As URLs absolutas do `<head>` apontam para `https://www.portfoliomx.online`,
+o domínio próprio do portfólio desde 10/09/2026. O apex `portfoliomx.online`
+existe e devolve 308 para o `www`, então o `www` é o endereço canônico e é ele
+que vai nas meta tags. Se o endereço mudar de novo, são quatro lugares:
 `<link rel="canonical">`, `og:url`, `og:image` e `twitter:image`.
+
+O endereço da Vercel (`projeto-portfolio-blue.vercel.app`) continua no ar e
+serve o mesmo site, mas não deve aparecer em meta tag: link compartilhado com
+dois endereços diferentes para a mesma página divide o histórico e confunde
+quem recebe.
 
 O preview que aparece ao compartilhar no WhatsApp usa `assets/og-portfolio.jpg`
 — um card 1200×630 na identidade do site. Para regerar depois de mudar o
