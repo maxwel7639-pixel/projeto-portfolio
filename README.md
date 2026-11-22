@@ -7,7 +7,7 @@ Site estático, sem build. Basta servir a pasta.
 
 ```
 index.html              página inteira (HTML + CSS + JS inline)
-assets/logo-mx.png      logo da marca (header + favicon)
+assets/mx-prateada.webp   logo da marca (header); icone-32/180.png = favicons
 assets/proj-*.webp      prints desktop dos 13 sites (usados acima de 720px)
 assets/mob-*.webp       prints mobile dos 13 sites (usados até 720px)
 ```
